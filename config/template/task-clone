@@ -1,0 +1,39 @@
+#!/bin/sh
+
+{% include "proc-stub" %}
+
+echo "-----(( task-clone ))-----(( $* ))-----(( $(pwd) ))-----"
+
+nodex=$(which node)
+[ -z "${nodex}" ] && echo "missing node" && exit 1
+
+conf=$1
+nodes=$2
+nodenum=$3
+
+[ ! -f "${conf}" ] && echo "missing config : ${conf}" && exit 1
+[ -z ${nodes} ] && echo "missing node count" && exit 1
+[ -z ${nodenum} ] && echo "missing node number" && exit 1
+
+cat > job.node.js << EOF
+var fs = require('fs');
+var cfg = eval('('+fs.readFileSync('${conf}')+')');
+if (!cfg.jobid) {
+	console.log('echo missing source job id; exit 1');
+	process.exit(1)
+}
+if (!cfg.hosts) {
+	console.log('echo missing source host list; exit 1');
+	process.exit(1)
+}
+var minionPath = cfg.minionPath || 'hydra/minion';
+var dataPath = cfg.dataPath || 'data';
+for (var i in cfg.hosts) {
+	console.log(['rsync -av --delete ',cfg.hosts[i],':',minionPath,'/',cfg.jobid,'/${nodenum}/gold/',dataPath,'/ ',dataPath,'/'].join(''));
+}
+process.exit()
+EOF
+
+${nodex} job.node.js > job.bash
+source job.bash
+exit 0
