@@ -1,0 +1,7 @@
+#!/bin/sh
+
+{% include "proc-stub" %}
+
+register_node model-server
+startProcess model-server ${HYDRA_CMD} -cp ${HYDRA_CP}:${HYDRA_CP_TASK} com.newbrandanalytics.service.ModelServer
+

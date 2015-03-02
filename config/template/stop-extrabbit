@@ -1,0 +1,5 @@
+#!/bin/sh
+
+{% include "proc-stub" %}
+
+echo "stopProcess :: external-rabbit"
