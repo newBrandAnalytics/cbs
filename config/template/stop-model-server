@@ -1,0 +1,6 @@
+#!/bin/sh
+
+{% include "proc-stub" %}
+
+stopProcess model-server
+

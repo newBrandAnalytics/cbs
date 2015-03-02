@@ -1,0 +1,5 @@
+#!/bin/sh
+
+{% include "proc-stub" %}
+
+register_node rabbit
